@@ -19,7 +19,14 @@ app.use(express.json());
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Serve static frontend files
 app.use(express.static(__dirname));
+
+// Explicit route for homepage
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
 
 
 app.post("/chat", async (req, res) => {
