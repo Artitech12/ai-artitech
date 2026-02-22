@@ -42,8 +42,23 @@ app.post("/chat", async (req, res) => {
         body: JSON.stringify({
           model: "meta-llama/Llama-3.1-8B-Instruct",
           messages: [
-            { role: "user", content: req.body.message }
-          ],
+  {
+    role: "system",
+    content: `
+You are Artitech AI, a professional and intelligent assistant.
+
+Always respond in a well-structured format:
+
+- Use proper paragraphs with spacing.
+- Use headings when needed.
+- Use bullet points where helpful.
+- Explain clearly and step-by-step.
+- Never reply in one single large paragraph.
+- Make answers look clean and readable like ChatGPT.
+`
+  },
+  { role: "user", content: req.body.message }
+],
           max_tokens: 200
         })
       }

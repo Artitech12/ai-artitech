@@ -22,6 +22,8 @@ async function sendMessage() {
   addMessage(message, "user");
   userInput.value = "";
 
+  showTypingIndicator();
+
   try {
     const response = await fetch("/chat", {
       method: "POST",
@@ -30,9 +32,12 @@ async function sendMessage() {
     });
 
     const data = await response.json();
-    addMessage(data.reply, "bot");
+
+    removeTypingIndicator();
+    typeMessage(data.reply);
 
   } catch (error) {
+    removeTypingIndicator();
     addMessage("Error connecting to server.", "bot");
   }
 }
@@ -40,8 +45,52 @@ async function sendMessage() {
 function addMessage(text, sender) {
   const messageDiv = document.createElement("div");
   messageDiv.classList.add("message", sender);
-  messageDiv.textContent = text;
+  messageDiv.innerHTML = formatText(text);
+  chatBox.appendChild(messageDiv);
+  scrollToBottom();
+}
+
+function typeMessage(text) {
+  const messageDiv = document.createElement("div");
+  messageDiv.classList.add("message", "bot");
   chatBox.appendChild(messageDiv);
 
+  let i = 0;
+  const speed = 20; // typing speed
+
+  function typing() {
+    if (i < text.length) {
+      messageDiv.innerHTML = formatText(text.substring(0, i + 1));
+      i++;
+      scrollToBottom();
+      setTimeout(typing, speed);
+    }
+  }
+
+  typing();
+}
+
+function showTypingIndicator() {
+  const typingDiv = document.createElement("div");
+  typingDiv.classList.add("message", "bot");
+  typingDiv.id = "typingIndicator";
+  typingDiv.innerHTML = "Artitech is typing...";
+  chatBox.appendChild(typingDiv);
+  scrollToBottom();
+}
+
+function removeTypingIndicator() {
+  const typing = document.getElementById("typingIndicator");
+  if (typing) typing.remove();
+}
+
+function scrollToBottom() {
   chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+/* FORMAT RESPONSE LIKE CHATGPT */
+function formatText(text) {
+  return text
+    .replace(/\n/g, "<br><br>") // line breaks
+    .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>") // bold
 }
