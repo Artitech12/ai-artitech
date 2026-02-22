@@ -1,12 +1,37 @@
 const chatBox = document.getElementById("chatBox");
 const userInput = document.getElementById("userInput");
+const sidebar = document.getElementById("sidebar");
+const searchInput = document.getElementById("searchInput");
+const chatHistory = document.getElementById("chatHistory");
 
+let chats = [];
+
+/* ================================
+   SIDEBAR TOGGLE
+================================= */
+function toggleSidebar() {
+  sidebar.classList.toggle("active");
+}
+
+/* ================================
+   NEW CHAT
+================================= */
+function newChat() {
+  chatBox.innerHTML = "";
+}
+
+/* ================================
+   ENTER KEY SEND
+================================= */
 userInput.addEventListener("keypress", function (e) {
   if (e.key === "Enter") {
     sendMessage();
   }
 });
 
+/* ================================
+   SEND MESSAGE
+================================= */
 async function sendMessage() {
   const message = userInput.value.trim();
   if (!message) return;
@@ -28,12 +53,57 @@ async function sendMessage() {
     removeTyping();
     typeMessage(data.reply);
 
+    saveChat(message);
+
   } catch (error) {
     removeTyping();
     addMessage("Error connecting to server.", "bot");
   }
 }
 
+/* ================================
+   SAVE CHAT TITLE
+================================= */
+function saveChat(firstMessage) {
+  if (chats.length === 0 || chats[chats.length - 1] !== firstMessage) {
+    chats.push(firstMessage);
+    renderChatHistory();
+  }
+}
+
+/* ================================
+   RENDER CHAT HISTORY
+================================= */
+function renderChatHistory() {
+  chatHistory.innerHTML = "";
+
+  chats.forEach((chat) => {
+    const div = document.createElement("div");
+    div.classList.add("chat-item");
+    div.textContent = chat.substring(0, 30);
+    chatHistory.appendChild(div);
+  });
+}
+
+/* ================================
+   SEARCH FUNCTION
+================================= */
+searchInput.addEventListener("input", function () {
+  const searchTerm = searchInput.value.toLowerCase();
+  const items = document.querySelectorAll(".chat-item");
+
+  items.forEach(item => {
+    if (item.textContent.toLowerCase().includes(searchTerm)) {
+      item.style.display = "block";
+    } else {
+      item.style.display = "none";
+    }
+  });
+});
+
+/* ================================
+   ADD MESSAGE
+================================= */
 function addMessage(text, sender) {
   const div = document.createElement("div");
   div.classList.add("message", sender);
@@ -80,7 +150,9 @@ function scrollBottom() {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-/* CLEAN MARKDOWN FORMATTER */
+/* ================================
+   FORMATTER
+================================= */
 function formatText(text) {
   return text
     .replace(/\n\n+/g, "</p><p>")

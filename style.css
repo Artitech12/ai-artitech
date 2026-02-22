@@ -1,8 +1,11 @@
+/* ===========================
+   GLOBAL RESET
+=========================== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial;
+  font-family: Arial, sans-serif;
 }
 
 body {
@@ -13,7 +16,9 @@ body {
   overflow: hidden;
 }
 
-/* Sidebar */
+/* ===========================
+   SIDEBAR
+=========================== */
 .sidebar {
   width: 260px;
   background: #141414;
@@ -21,21 +26,25 @@ body {
   left: -260px;
   top: 0;
   bottom: 0;
-  transition: 0.3s;
+  transition: 0.3s ease;
   padding: 20px;
   z-index: 1000;
   border-right: 1px solid #222;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar.active {
   left: 0;
 }
 
+/* Sidebar Header */
 .sidebar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   color: #ff2a2a;
+  margin-bottom: 10px;
 }
 
 .sidebar-header button {
@@ -46,8 +55,9 @@ body {
   cursor: pointer;
 }
 
+/* New Chat Button */
 .new-chat {
-  margin-top: 20px;
+  margin-top: 10px;
   padding: 10px;
   width: 100%;
   background: #ff2a2a;
@@ -55,9 +65,50 @@ body {
   border-radius: 8px;
   color: white;
   cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
 }
 
-/* Main */
+.new-chat:hover {
+  background: #ff4444;
+}
+
+/* Search Box */
+.search-box {
+  margin-top: 15px;
+  padding: 8px;
+  width: 100%;
+  border-radius: 6px;
+  border: none;
+  background: #1e1e1e;
+  color: white;
+  outline: none;
+}
+
+/* Chat History */
+#chatHistory {
+  margin-top: 15px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.chat-item {
+  padding: 8px;
+  margin-bottom: 6px;
+  background: #1e1e1e;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.chat-item:hover {
+  background: #2a2a2a;
+}
+
+/* ===========================
+   MAIN
+=========================== */
 .main {
   flex: 1;
   display: flex;
@@ -65,7 +116,9 @@ body {
   width: 100%;
 }
 
-/* Topbar */
+/* ===========================
+   TOPBAR
+=========================== */
 .topbar {
   height: 60px;
   display: flex;
@@ -89,7 +142,9 @@ body {
   font-size: 20px;
 }
 
-/* Chat */
+/* ===========================
+   CHAT AREA
+=========================== */
 .chat-wrapper {
   flex: 1;
   overflow-y: auto;
@@ -106,31 +161,49 @@ body {
   gap: 15px;
 }
 
+/* Messages */
 .message {
   padding: 12px 16px;
   border-radius: 12px;
   max-width: 75%;
-  line-height: 1.5;
+  line-height: 1.6;
   animation: fadeIn 0.3s ease-in;
+  word-wrap: break-word;
 }
 
 .user {
   align-self: flex-end;
   background: #ff2a2a;
+  color: white;
 }
 
 .bot {
   align-self: flex-start;
   background: #1e1e1e;
   border: 1px solid #2a2a2a;
+  color: white;
 }
 
 @keyframes fadeIn {
-  from {opacity: 0;}
-  to {opacity: 1;}
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-/* Input Area */
+/* Headings in message */
+.message h1,
+.message h2,
+.message h3 {
+  color: #ff2a2a;
+  margin-bottom: 8px;
+}
+
+.message strong {
+  color: #ffffff;
+}
+
+/* ===========================
+   INPUT AREA
+=========================== */
 .input-area {
   display: flex;
   justify-content: center;
@@ -153,7 +226,8 @@ body {
 }
 
 /* Buttons */
-.send-btn, .plus-btn {
+.send-btn,
+.plus-btn {
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -173,21 +247,19 @@ body {
   color: white;
 }
 
-.send-btn:hover, .plus-btn:hover {
+.send-btn:hover,
+.plus-btn:hover {
   background: #ff4444;
 }
 
-.message h1,
-.message h2,
-.message h3 {
-  color: #ff2a2a;
-  margin-bottom: 8px;
+/* ===========================
+   SCROLLBAR STYLE (Optional)
+=========================== */
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-.message strong {
-  color: #ffffff;
-}
-
-.message {
-  line-height: 1.6;
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
 }

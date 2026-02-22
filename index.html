@@ -9,12 +9,25 @@
 
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
+
   <div class="sidebar-header">
     <h2>Artitech</h2>
     <button onclick="toggleSidebar()">✕</button>
   </div>
 
   <button class="new-chat" onclick="newChat()">+ New Chat</button>
+
+  <!-- Search -->
+  <input 
+    type="text" 
+    id="searchInput" 
+    placeholder="Search chats..."
+    class="search-box"
+  />
+
+  <!-- Chat History -->
+  <div id="chatHistory"></div>
+
 </div>
 
 <!-- Main -->
