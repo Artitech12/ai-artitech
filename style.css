@@ -176,3 +176,18 @@ body {
 .send-btn:hover, .plus-btn:hover {
   background: #ff4444;
 }
+
+.message h1,
+.message h2,
+.message h3 {
+  color: #ff2a2a;
+  margin-bottom: 8px;
+}
+
+.message strong {
+  color: #ffffff;
+}
+
+.message {
+  line-height: 1.6;
+}

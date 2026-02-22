@@ -4,30 +4,20 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 
-
-
-
 dotenv.config();
-console.log("Loaded Token:", process.env.HF_TOKEN);
-
 
 const app = express();
-app.use(cors());  
+app.use(cors());
 app.use(express.json());
-
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Serve static frontend files
 app.use(express.static(__dirname));
 
-// Explicit route for homepage
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
-
-
 
 app.post("/chat", async (req, res) => {
   try {
@@ -42,34 +32,41 @@ app.post("/chat", async (req, res) => {
         body: JSON.stringify({
           model: "meta-llama/Llama-3.1-8B-Instruct",
           messages: [
-  {
-    role: "system",
-    content: `
-You are Artitech AI, a professional and intelligent assistant.
+            {
+              role: "system",
+              content: `
+You are Artitech AI, an expert-level academic assistant.
 
-Always respond in a well-structured format:
+STRICT RESPONSE RULES:
 
-- Use proper paragraphs with spacing.
-- Use headings when needed.
-- Use bullet points where helpful.
-- Explain clearly and step-by-step.
-- Never reply in one single large paragraph.
-- Make answers look clean and readable like ChatGPT.
+1. Always structure answers clearly.
+2. Use proper section headings.
+3. Use numbered lists (1., 2., 3.).
+4. Avoid unnecessary blank lines.
+5. Keep spacing clean and consistent.
+6. Explain deeply but clearly.
+7. If scientific topic, explain step-by-step logically.
+8. Never respond in one large paragraph.
+9. Format cleanly using markdown style.
+
+Make responses professional, accurate, and high quality like ChatGPT.
 `
-  },
-  { role: "user", content: req.body.message }
-],
-          max_tokens: 200
+            },
+            {
+              role: "user",
+              content: `Explain in structured, academic, detailed style:\n\n${req.body.message}`
+            }
+          ],
+          max_tokens: 800,
+          temperature: 0.5
         })
       }
     );
 
     const data = await response.json();
 
-    console.log("HF RESPONSE:", data);
-
     res.json({
-      reply: data.choices[0].message.content
+      reply: data.choices?.[0]?.message?.content || "No response generated."
     });
 
   } catch (error) {
@@ -79,5 +76,5 @@ Always respond in a well-structured format:
 });
 
 app.listen(3000, () => {
-  console.log("Server running on http://localhost:3000");
+  console.log("Server running...");
 });

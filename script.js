@@ -1,15 +1,7 @@
 const chatBox = document.getElementById("chatBox");
 const userInput = document.getElementById("userInput");
 
-function toggleSidebar() {
-  document.getElementById("sidebar").classList.toggle("active");
-}
-
-function newChat() {
-  chatBox.innerHTML = "";
-}
-
-userInput.addEventListener("keypress", function(e) {
+userInput.addEventListener("keypress", function (e) {
   if (e.key === "Enter") {
     sendMessage();
   }
@@ -22,7 +14,7 @@ async function sendMessage() {
   addMessage(message, "user");
   userInput.value = "";
 
-  showTypingIndicator();
+  showTyping();
 
   try {
     const response = await fetch("/chat", {
@@ -33,36 +25,36 @@ async function sendMessage() {
 
     const data = await response.json();
 
-    removeTypingIndicator();
+    removeTyping();
     typeMessage(data.reply);
 
   } catch (error) {
-    removeTypingIndicator();
+    removeTyping();
     addMessage("Error connecting to server.", "bot");
   }
 }
 
 function addMessage(text, sender) {
-  const messageDiv = document.createElement("div");
-  messageDiv.classList.add("message", sender);
-  messageDiv.innerHTML = formatText(text);
-  chatBox.appendChild(messageDiv);
-  scrollToBottom();
+  const div = document.createElement("div");
+  div.classList.add("message", sender);
+  div.innerHTML = formatText(text);
+  chatBox.appendChild(div);
+  scrollBottom();
 }
 
 function typeMessage(text) {
-  const messageDiv = document.createElement("div");
-  messageDiv.classList.add("message", "bot");
-  chatBox.appendChild(messageDiv);
+  const div = document.createElement("div");
+  div.classList.add("message", "bot");
+  chatBox.appendChild(div);
 
   let i = 0;
-  const speed = 20; // typing speed
+  const speed = 15;
 
   function typing() {
     if (i < text.length) {
-      messageDiv.innerHTML = formatText(text.substring(0, i + 1));
+      div.innerHTML = formatText(text.substring(0, i + 1));
       i++;
-      scrollToBottom();
+      scrollBottom();
       setTimeout(typing, speed);
     }
   }
@@ -70,27 +62,32 @@ function typeMessage(text) {
   typing();
 }
 
-function showTypingIndicator() {
-  const typingDiv = document.createElement("div");
-  typingDiv.classList.add("message", "bot");
-  typingDiv.id = "typingIndicator";
-  typingDiv.innerHTML = "Artitech is typing...";
-  chatBox.appendChild(typingDiv);
-  scrollToBottom();
+function showTyping() {
+  const div = document.createElement("div");
+  div.classList.add("message", "bot");
+  div.id = "typing";
+  div.innerHTML = "Artitech is typing...";
+  chatBox.appendChild(div);
+  scrollBottom();
 }
 
-function removeTypingIndicator() {
-  const typing = document.getElementById("typingIndicator");
+function removeTyping() {
+  const typing = document.getElementById("typing");
   if (typing) typing.remove();
 }
 
-function scrollToBottom() {
+function scrollBottom() {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-/* FORMAT RESPONSE LIKE CHATGPT */
+/* CLEAN MARKDOWN FORMATTER */
 function formatText(text) {
   return text
-    .replace(/\n/g, "<br><br>") // line breaks
-    .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>") // bold
+    .replace(/\n\n+/g, "</p><p>")
+    .replace(/\n/g, "<br>")
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    .replace(/^### (.*$)/gim, "<h3>$1</h3>")
+    .replace(/^## (.*$)/gim, "<h2>$1</h2>")
+    .replace(/^# (.*$)/gim, "<h1>$1</h1>")
+    .replace(/^\d+\.\s/gm, "• ");
 }
